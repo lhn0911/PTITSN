@@ -4,7 +4,7 @@ import { FiEye } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import baseUrl from "../api/index";
+import baseUrl from "../../api/index";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Login: React.FC = () => {
@@ -25,7 +25,7 @@ const Login: React.FC = () => {
     }
 
     try {
-      const response = await axios.get(`${baseUrl}/User`, {
+      const response = await baseUrl.get(`/User`, {
         params: {
           email,
           password,
@@ -40,6 +40,7 @@ const Login: React.FC = () => {
           setIsModalOpen(true);
         } else {
           localStorage.setItem("isAuthenticated", "true");
+          localStorage.setItem("userName", user.name); // Store user's name
           navigate("/home"); // Redirect to user home page
         }
       } else {
@@ -120,7 +121,7 @@ const Login: React.FC = () => {
             <FaGoogle className="me-2" /> Google
           </button>
         </div>
-        {isModalOpen && (
+        {/* {isModalOpen && (
           <div className="modal d-block" tabIndex={-1}>
             <div className="modal-dialog">
               <div className="modal-content">
@@ -145,9 +146,7 @@ const Login: React.FC = () => {
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+            </div> */}
       </div>
     </div>
   );

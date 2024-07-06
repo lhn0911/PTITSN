@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Header.scss";
-import baseUrl from "../../api/index";
+
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const authStatus = localStorage.getItem("isAuthenticated") === "true";
+    const name = localStorage.getItem("userName") || "User";
+    setIsAuthenticated(authStatus);
+    setUserName(name);
+  }, []);
 
   const handleLogout = () => {
     localStorage.setItem("isAuthenticated", "false");
+    localStorage.removeItem("userName");
+    setIsAuthenticated(false);
     navigate("/login");
   };
 
@@ -43,6 +53,11 @@ const Header: React.FC = () => {
             <li className={getNavItemClass("/home")}>
               <a href="#home">
                 <i className="fa-solid fa-house fs-3"></i>
+              </a>
+            </li>
+            <li className={getNavItemClass("/me")}>
+              <a href="#me">
+                <i className="fa-regular fa-user fs-3"></i>
               </a>
             </li>
             <li className={getNavItemClass("/frend")}>
@@ -88,7 +103,7 @@ const Header: React.FC = () => {
                   src="https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378"
                   alt="Profile"
                 />
-                <div className="header__profile-name">User Name</div>
+                <div className="header__profile-name">{userName}</div>
               </div>
             )}
             {isAuthenticated && (

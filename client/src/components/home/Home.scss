@@ -129,6 +129,7 @@
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 20px;
+  width: 600px;
 }
 
 .create-post-actions {
@@ -230,7 +231,6 @@
 
 .post-header {
   display: flex;
-  align-items: center;
 }
 
 .post-user {
@@ -273,4 +273,39 @@
   border: none;
   cursor: pointer;
   color: #555;
+}
+.group-img,
+.friend-img,
+.user-img {
+  width: 55px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.user-menu-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user-menu-item .material-icons {
+  margin-right: 10px;
+}
+
+.group-chat,
+.contact,
+.user-activity {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.user-avatar {
+  height: 45px;
 }

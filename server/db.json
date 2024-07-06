@@ -1,99 +1,133 @@
 {
-    "User": [
-      {
-        "name": "p h",
-        "email": "phamtrunghieu@gmail.com",
-        "password": "12341234",
-        "id": 1,
-        "status": true,
-        "img": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378"
-      },
-      {
-        "name": "p p",
-        "email": "pp@gmail.com",
-        "password": "123123",
-        "id": 2,
-        "status": false,
-        "img": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378"
-      },
-      {
-        "name": "q q",
-        "email": "qq@gmail.com",
-        "password": "11111",
-        "status": true,
-        "id": 3,
-        "img": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378"
-      }
-    ],
-    "stories": [
-      {
-        "id": 1,
-        "user": "Nguyễn Văn A",
-        "image": "path/to/image1.jpg"
-      },
-      {
-        "id": 2,
-        "user": "Nguyễn Văn B",
-        "image": "path/to/image2.jpg"
-      },
-      {
-        "id": 3,
-        "user": "Nguyễn Văn C",
-        "image": "path/to/image3.jpg"
-      },
-      {
-        "id": 4,
-        "user": "Nguyễn Văn D",
-        "image": "path/to/image4.jpg"
-      },
-      {
-        "id": 5,
-        "user": "Nguyễn Văn E",
-        "image": "path/to/image5.jpg"
-      },
-      {
-        "id": 6,
-        "user": "Nguyễn Văn F",
-        "image": "path/to/image6.jpg"
-      }
-    ],
-    "Post": [
-      {
-        "id": 1,
-        "user": "Hội nhóm nghiện Mèo",
-        "content": "Bé Mèo Cute<3",
-        "image": "https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/avatar-anh-meo-cute-1.jpg",
-        "like": 100,
-        "comment": 100,
-        "share": 100
-      }
-    ],
-    "comments": [
-      {
-        "username": "nguyễn văn a",
-        "content": "Bé mèo này cute v~~",
-        "post_id": 1
-      }
-    ],
-    "friends": [
-      {
-        "id": 1,
-        "name": "Đức Hiếu"
-      },
-      {
-        "id": 2,
-        "name": "Lê Kế"
-      }
-    ],
-    "groups": [
-      {
-        "id": 1,
-        "name": "TFT Mobile Việt Nam - Đấu Trường Chân Lý Việt Nam"
-      },
-      {
-        "id": 2,
-        "name": "Phòng trọ Hà Đông - Cho thuê nhà trọ"
-      }
-    ]
-  }
-  
+  "User": [
+    {
+      "name": "Đình Dương",
+      "email": "1@gmail.com",
+      "password": "123123",
+      "status": true,
+      "avatar": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
+      "id": 1
+    },
+    {
+      "name": "Phạm Hiếu",
+      "email": "hieupham@gmail.com",
+      "password": "hieupham",
+      "status": true,
+      "img": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
+      "id": 2
+    }
+  ],
+  "stories": [
+    {
+      "id": 1,
+      "user": "Nguyễn Văn A",
+      "image": "path/to/image1.jpg"
+    },
+    {
+      "id": 2,
+      "user": "Nguyễn Văn B",
+      "image": "path/to/image2.jpg"
+    },
+    {
+      "id": 3,
+      "user": "Nguyễn Văn C",
+      "image": "path/to/image3.jpg"
+    },
+    {
+      "id": 4,
+      "user": "Nguyễn Văn D",
+      "image": "path/to/image4.jpg"
+    },
+    {
+      "id": 5,
+      "user": "Nguyễn Văn E",
+      "image": "path/to/image5.jpg"
+    },
+    {
+      "id": 6,
+      "user": "Nguyễn Văn F",
+      "image": "path/to/image6.jpg"
+    }
+  ],
+  "Post": [
+    {
+      "id": 1,
+      "user": "Hội nhóm nghiện Mèo",
+      "content": "Bé Mèo Cute<3",
+      "image": "https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/avatar-anh-meo-cute-1.jpg",
+      "visibility": "public",
+      "like": 100,
+      "comment": 100,
+      "share": 100
+    },
+    {
+      "id": 2,
+      "user": "Đình Dương",
+      "userImg": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
+      "content": "Thèm chơi gái",
+      "visibility": "public",
+      "image": "blob:http://localhost:5173/cef61f5f-78a7-426a-966b-d6a61688560a",
+      "like": 0,
+      "comment": 0,
+      "share": 0
+    },
+    {
+      "id": 3,
+      "user": "Đình Dương",
+      "userImg": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
+      "content": "muốn về quê",
+      "visibility": "private",
+      "image": "blob:http://localhost:5173/3d013fa5-09a2-427b-9834-ed14faac55c3",
+      "like": 0,
+      "comment": 0,
+      "share": 0
+    }
+  ],
+  "comments": [
+    {
+      "username": "nguyễn văn a",
+      "content": "Bé mèo này cute v~~",
+      "post_id": 1
+    }
+  ],
+  "friends": [
+    {
+      "id": 1,
+      "name": "Đức Hiếu"
+    },
+    {
+      "id": 2,
+      "name": "Lê Kế"
+    }
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "name": "TFT Mobile Việt Nam - Đấu Trường Chân Lý Việt Nam"
+    },
+    {
+      "id": 2,
+      "name": "Phòng trọ Hà Đông - Cho thuê nhà trọ"
+    },
+    {
+      "name": "nhóm đi bay",
+      "image": "123.jpg",
+      "id": 3
+    },
+    {
+      "name": "nhóm fan anh híu",
+      "image": "hiudubai.jpg",
+      "id": 4
+    },
+    {
+      "name": "1",
+      "image": "1",
+      "id": 5
+    },
+    {
+      "name": "2",
+      "image": "2",
+      "id": 6
+    }
+  ]
+}

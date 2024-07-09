@@ -1,17 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../Home.scss";
-export default function MainRight({ currentUser, groups }: any) {
+
+interface Group {
+  id: string;
+  name: string;
+  image: string;
+}
+
+interface User {
+  name: string;
+  avatar: string;
+}
+
+interface MainRightProps {
+  currentUser: User;
+  groups: Group[];
+}
+
+export default function MainRight({ currentUser, groups }: MainRightProps) {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    if (currentUser) {
+      setUser(currentUser); // Cập nhật user state khi prop currentUser thay đổi
+      console.log("Current user updated:", currentUser);
+    }
+  }, [currentUser]);
+
   return (
     <div className="main-right">
       <div className="user-info">
-        {currentUser && (
+        {user && (
           <div className="user-profile">
-            <img
-              src={currentUser.avatar}
-              alt={currentUser.name}
-              className="user-img"
-            />
-            <div className="user-name">{currentUser.name}</div>
+            <img src={user.avatar} alt={user.name} className="user-img" />
+            <div className="user-name">{user.name}</div>
           </div>
         )}
         <div className="user-menu">
@@ -43,7 +65,7 @@ export default function MainRight({ currentUser, groups }: any) {
       </div>
       <div className="user-activities">
         <h3>Lối tắt của bạn</h3>
-        {groups.map((group: any) => (
+        {groups.map((group: Group) => (
           <div key={group.id} className="user-activity">
             <img src={group.image} alt={group.name} className="group-img" />
             {group.name}

@@ -29,7 +29,7 @@ export default function Home() {
         ] = await Promise.all([
           baseUrl.get("/Post"),
           baseUrl.get("/stories"),
-          baseUrl.get("/friends"),
+          baseUrl.get("/friend"),
           baseUrl.get("/groups"),
           baseUrl.get("/User"),
           baseUrl.get("/comments"),

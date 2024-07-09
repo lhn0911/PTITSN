@@ -1,27 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import api from "../../../api/index";
 import "../Home.scss";
 
-export default function MainLeft({ groups, friends }: any) {
+export default function MainLeft({ friends }: any) {
   const [showModal, setShowModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
   const [newGroupImage, setNewGroupImage] = useState("");
+  const [groupList, setGroupList] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Fetch groups from API when component mounts
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const response = await api.get("/groups");
+        setGroupList(response.data);
+      } catch (error) {
+        console.error("Error fetching groups:", error);
+      }
+    };
+    fetchGroups();
+  }, []);
 
   const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setNewGroupName("");
+    setNewGroupImage("");
+    setErrorMessage("");
+  };
 
   const handleCreateGroup = async () => {
+    if (newGroupName.trim() === "" || newGroupImage.trim() === "") {
+      setErrorMessage("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
     try {
       const newGroup = {
         name: newGroupName,
         image: newGroupImage,
       };
-      await api.post("/groups", newGroup);
-      // Optionally, update the state to reflect the new group without reloading
-      // setGroups([...groups, newGroup]);
+      const response = await api.post("/groups", newGroup);
+      // Update the group list with the newly created group
+      setGroupList([...groupList, response.data]);
       handleCloseModal();
     } catch (error) {
       console.error("Error creating group:", error);
@@ -35,7 +59,7 @@ export default function MainLeft({ groups, friends }: any) {
           <h6>Nhóm của bạn</h6>
           <i className="fa-solid fa-magnifying-glass"></i>
         </div>
-        {groups.map((group: any) => (
+        {groupList.map((group: any) => (
           <div key={group.id} className="group-chat">
             <img src={group.image} alt={group.name} className="group-img" />
             {group.name}
@@ -83,6 +107,7 @@ export default function MainLeft({ groups, friends }: any) {
                 placeholder="Nhập URL hình ảnh nhóm"
               />
             </Form.Group>
+            {errorMessage && <p className="text-danger">{errorMessage}</p>}
           </Form>
         </Modal.Body>
         <Modal.Footer>

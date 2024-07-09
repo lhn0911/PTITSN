@@ -1,20 +1,82 @@
 {
   "User": [
     {
-      "name": "Đình Dương",
-      "email": "1@gmail.com",
-      "password": "123123",
+      "name": "Hoàng Nam",
+      "email": "hn@gmail.com",
+      "password": "09112005",
       "status": true,
-      "avatar": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
-      "id": 1
+      "img": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
+      "id": 1,
+      "friend": [
+        {
+          "id": 1,
+          "name": "Hiếu Phạm"
+        },
+        {
+          "id": 2,
+          "name": "b"
+        },
+        {
+          "id": 1,
+          "name": "a"
+        }
+      ],
+      "addfriend": [
+        {
+          "id": 1,
+          "name": "a",
+          "img": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
+          "status": true
+        },
+        {
+          "id": 2,
+          "name": "b",
+          "status": true
+        }
+      ]
     },
     {
-      "name": "Phạm Hiếu",
-      "email": "hieupham@gmail.com",
+      "name": "Hiếu Phạm",
+      "email": "hp@gmail.com",
       "password": "hieupham",
       "status": true,
       "img": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
       "id": 2
+    },
+    {
+      "name": "1 1",
+      "email": "1@gmail.com",
+      "password": "123123",
+      "status": true,
+      "img": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
+      "id": 3,
+      "addfriend": [
+        {
+          "id": 1,
+          "name": "Hoàng Nam",
+          "status": false
+        },
+        {
+          "id": 1,
+          "name": "Hoàng Nam",
+          "status": false
+        },
+        {
+          "id": 1,
+          "name": "Hoàng Nam",
+          "status": false
+        },
+        {
+          "id": 1,
+          "name": "Hoàng Nam",
+          "status": false
+        },
+        {
+          "id": 1,
+          "name": "Hoàng Nam",
+          "status": false
+        }
+      ]
     }
   ],
   "stories": [
@@ -90,44 +152,26 @@
       "post_id": 1
     }
   ],
-  "friends": [
-    {
-      "id": 1,
-      "name": "Đức Hiếu"
-    },
-    {
-      "id": 2,
-      "name": "Lê Kế"
-    }
-  ],
   "groups": [
-    {
-      "id": 1,
-      "name": "TFT Mobile Việt Nam - Đấu Trường Chân Lý Việt Nam"
-    },
-    {
-      "id": 2,
-      "name": "Phòng trọ Hà Đông - Cho thuê nhà trọ"
-    },
-    {
-      "name": "nhóm đi bay",
-      "image": "123.jpg",
-      "id": 3
-    },
-    {
-      "name": "nhóm fan anh híu",
-      "image": "hiudubai.jpg",
-      "id": 4
-    },
     {
       "name": "1",
       "image": "1",
-      "id": 5
+      "id": 1
     },
     {
       "name": "2",
       "image": "2",
-      "id": 6
+      "id": 2
+    },
+    {
+      "name": "2",
+      "image": "2",
+      "id": 3
+    },
+    {
+      "name": "12",
+      "image": "12",
+      "id": 4
     }
   ]
 }

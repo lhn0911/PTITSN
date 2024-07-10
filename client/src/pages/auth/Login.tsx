@@ -1,31 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaLock, FaFacebook, FaTwitter, FaGoogle } from "react-icons/fa";
 import { FiEye } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import baseUrl from "../../api/index";
+import baseURL from "../../api/index"; // Import your baseURL for API calls
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/reducers/userReducer";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     setIsSubmitted(true);
 
     if (email === "" || password === "") {
       setError("Vui lòng điền đầy đủ thông tin");
-      setIsModalOpen(true);
       return;
     }
 
     try {
-      const response = await baseUrl.get(`/User`, {
+      const response = await baseURL.get(`/User`, {
         params: {
           email,
           password,
@@ -37,19 +37,24 @@ const Login: React.FC = () => {
         const user = data[0];
         if (user.status === false) {
           setError("Tài khoản bị khóa");
-          setIsModalOpen(true);
         } else {
-          localStorage.setItem("isAuthenticated", "true");
-          localStorage.setItem("userName", user.name); // Store user's name
-          navigate("/home"); // Redirect to user home page
+          // Save user information to local storage
+          localStorage.setItem(
+            "userLogin",
+            JSON.stringify({ id: user.id, username: user.username })
+          );
+          if (user.email === "admin@gmail.com" && password === "admin") {
+            navigate("/admin"); // Redirect to admin page
+          } else {
+            dispatch(login(user.username)); // Dispatch login action to Redux store
+            navigate("/home"); // Redirect to user's home page
+          }
         }
       } else {
         setError("Sai tài khoản hoặc mật khẩu");
-        setIsModalOpen(true);
       }
     } catch (error) {
       setError("Có lỗi xảy ra. Vui lòng thử lại.");
-      setIsModalOpen(true);
     }
   };
 
@@ -57,9 +62,21 @@ const Login: React.FC = () => {
     navigate("/register");
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const isAuthenticated = localStorage.getItem("userLogin") !== null;
+      if (isAuthenticated) {
+        const userLogin = JSON.parse(localStorage.getItem("userLogin") || "");
+        dispatch(login(userLogin.username));
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [dispatch]);
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-info-subtle">
@@ -121,32 +138,6 @@ const Login: React.FC = () => {
             <FaGoogle className="me-2" /> Google
           </button>
         </div>
-        {/* {isModalOpen && (
-          <div className="modal d-block" tabIndex={-1}>
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Error</h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    onClick={closeModal}
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  <p>{error}</p>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={closeModal}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div> */}
       </div>
     </div>
   );

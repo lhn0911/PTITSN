@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import MainLeft from "./main/Mainleft";
-import MainRight from "./main/Mainright";
+import MainLeft from "./main/MainLeft";
+import MainRight from "./main/MainRight";
 import StoriesSection from "./post/StoriesSection";
 import Post from "./post/Post";
-import CreatePostModal from "./post/CreatePostModaal";
-import baseUrl from "../../api/index";
+import CreatePostModal from "./post/CreatePostModal";
+import baseUrl from "../../api/index"; // Import baseURL từ file index
 import "./Home.scss";
 
 export default function Home() {
@@ -22,21 +22,19 @@ export default function Home() {
         const [
           postsResponse,
           storiesResponse,
-          friendsResponse,
           groupsResponse,
           userResponse,
           commentsResponse,
         ] = await Promise.all([
           baseUrl.get("/Post"),
           baseUrl.get("/stories"),
-          baseUrl.get("/friend"),
           baseUrl.get("/groups"),
           baseUrl.get("/User"),
           baseUrl.get("/comments"),
         ]);
+
         setPosts(postsResponse.data);
         setStories(storiesResponse.data);
-        setFriends(friendsResponse.data);
         setGroups(groupsResponse.data);
         setComments(commentsResponse.data);
         setCurrentUser(userResponse.data[0]);
@@ -53,14 +51,16 @@ export default function Home() {
 
     const post = {
       id: posts.length + 1,
-      user: currentUser.name,
-      userImg: currentUser.avatar,
+      user_id: currentUser.id,
+      group_id: -1,
       content: newPost.content,
+      userImg: currentUser.avatar,
       visibility: newPost.visibility,
       image: newPost.image ? URL.createObjectURL(newPost.image) : null,
       like: 0,
       comment: 0,
       share: 0,
+      created_at: new Date().toISOString(),
     };
 
     try {
@@ -104,7 +104,7 @@ export default function Home() {
               <input
                 type="text"
                 placeholder={`${
-                  currentUser ? currentUser.name : "Hoàng"
+                  currentUser ? currentUser.username : "Người dùng"
                 } ơi, bạn đang nghĩ gì thế?`}
                 onClick={() => setModalShow(true)}
               />

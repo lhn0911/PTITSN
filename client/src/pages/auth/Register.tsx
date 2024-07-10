@@ -14,7 +14,7 @@ import { AiOutlineMail } from "react-icons/ai";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Register.scss";
-import baseUrl from "../../api";
+import baseUrl from "../../api/index";
 
 const Register: React.FC = () => {
   const [firstName, setFirstName] = useState("");

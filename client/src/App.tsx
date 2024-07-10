@@ -1,8 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Header from "./layout/Header/Header";
-import Register from "./components/auth/Register";
-import Login from "./components/auth/Login";
+import Register from "./pages/auth/Register";
+import Login from "./pages/auth/Login";
 import Home from "./components/home/Home";
 import Me from "./pages/user/User";
 import Friend from "./pages/user/Friend";

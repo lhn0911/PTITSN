@@ -17,7 +17,7 @@ interface MainRightProps {
   groups: Group[];
 }
 
-export default function MainRight({ currentUser, groups }: MainRightProps) {
+const MainRight: React.FC<MainRightProps> = ({ currentUser, groups }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function MainRight({ currentUser, groups }: MainRightProps) {
         {user && (
           <div className="user-profile">
             <img src={user.avatar} alt={user.name} className="user-img" />
-            <div className="user-name">{user.name}</div>
+            <div className="user-name">{user.username}</div>
           </div>
         )}
         <div className="user-menu">
@@ -74,4 +74,6 @@ export default function MainRight({ currentUser, groups }: MainRightProps) {
       </div>
     </div>
   );
-}
+};
+
+export default MainRight;

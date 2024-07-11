@@ -1,35 +1,34 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../api';
-import { Group } from '../../interface';
+import baseURL from '../../api';
 
-export const fetchGroups = createAsyncThunk<Group[]>(
+export const fetchGroups:any = createAsyncThunk(
   'groups/fetchGroups',
   async () => {
-    const response = await api.get<Group[]>('/groups');
+    const response = await baseURL.get('/groups');
     return response.data;
   }
 );
 
-export const addGroup = createAsyncThunk<Group, Partial<Group>>(
+export const addGroup:any = createAsyncThunk(
   'groups/addGroup',
-  async (newGroup) => {
-    const response = await api.post<Group>('/groups', newGroup);
+  async (newGroup: any) => {
+    const response = await baseURL.post('/groups', newGroup);
     return response.data;
   }
 );
 
-export const updateGroup = createAsyncThunk<Group, Group>(
+export const updateGroup:any = createAsyncThunk(
   'groups/updateGroup',
-  async (group) => {
-    const response = await api.put<Group>(`/groups/${group.id}`, group);
+  async (group: any) => {
+    const response = await baseURL.put(`/groups/${group.id}`, group);
     return response.data;
   }
 );
 
-export const deleteGroup = createAsyncThunk<number, number>(
+export const deleteGroup:any = createAsyncThunk(
   'groups/deleteGroup',
-  async (groupId) => {
-    await api.delete(`/groups/${groupId}`);
+  async (groupId: number) => {
+    await baseURL.delete(`/groups/${groupId}`);
     return groupId;
   }
 );

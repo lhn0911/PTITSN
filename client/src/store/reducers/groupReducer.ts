@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { fetchGroups, addGroup, updateGroup, deleteGroup } from '../../services/user/groupService';
 import { Group } from '../../interface/index';
 
@@ -18,10 +18,10 @@ const groupSlice = createSlice({
   name: 'groups',
   initialState,
   reducers: {
-    setGroups: (state, action: PayloadAction<Group[]>) => {
+    setGroups: (state, action) => {
       state.groups = action.payload;
     },
-    setError: (state, action: PayloadAction<string>) => {
+    setError: (state, action) => {
       state.error = action.payload;
     },
     clearError: (state) => {

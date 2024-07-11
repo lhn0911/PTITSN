@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { login, logout } from "../../store/reducers/userReducer"; // Đảm bảo import này chính xác
+import { RootState } from "../../store/reducers/userReducer";
+import { login, logout } from "../../store/reducers/userReducer";
 import "./Header.scss";
 
 const Header: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Debug: Log state to check if it updates correctly
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.currentUser !== null
   );
@@ -17,6 +19,7 @@ const Header: React.FC = () => {
   );
 
   useEffect(() => {
+    console.log("useEffect for storage change called");
     const handleStorageChange = (event: StorageEvent) => {
       if (event.key === "isAuthenticated") {
         const authStatus = event.newValue === "true";
@@ -37,6 +40,7 @@ const Header: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    console.log("useEffect for initial auth check called");
     const authStatus = localStorage.getItem("isAuthenticated") === "true";
     if (authStatus && !isAuthenticated) {
       const name = localStorage.getItem("userName") || "User";
@@ -64,7 +68,23 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <div className="header__mainbar">
-        {/* ... (phần logo và search không thay đổi) ... */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div className="header__logo">
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/Screenshot_2024-07-04_090459-removebg-preview.png?alt=media&token=e21209cd-aad1-4ffc-97c8-69e7d87fa322"
+              alt="HobbyHub Logo"
+              className="shoplogo"
+            />
+          </div>
+          <div className="header__search">
+            <input
+              type="text"
+              placeholder="Tìm kiếm trên Hoppy"
+              className="header__search-input"
+            />
+            <span className="material-symbols-outlined">search</span>
+          </div>
+        </div>
         <div>
           <ul className="header__nav-list" style={{ gap: "80px" }}>
             <li
@@ -105,7 +125,7 @@ const Header: React.FC = () => {
         </div>
         <nav className="header__nav">
           <ul className="header__nav-list">
-            {!isAuthenticated && (
+            {!isAuthenticated ? (
               <>
                 <li
                   className="header__nav-item"
@@ -122,8 +142,7 @@ const Header: React.FC = () => {
                   nhập
                 </li>
               </>
-            )}
-            {isAuthenticated && (
+            ) : (
               <>
                 <div className="header__profile">
                   <img

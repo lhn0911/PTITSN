@@ -1,35 +1,50 @@
+
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import baseUrl from '../../api';
-import { User } from "../../interface/index";
-
-export const fetchUser = createAsyncThunk(
+export const fetchUser:any = createAsyncThunk(
   'user/fetchUser',
-  async (userId: number) => {
-    const response = await baseUrl.get(`/users/${userId}`);
-    return response.data;
+  async (userId, thunkAPI) => {
+    try {
+      const response = await baseUrl.get(`/users/${userId}`);
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to fetch user');
+    }
   }
 );
 
-export const addFriend = createAsyncThunk(
+export const addFriend:any = createAsyncThunk(
   'user/addFriend',
-  async (friendId: number) => {
-    const response = await baseUrl.post(`/users/addFriend`, { friendId });
-    return response.data;
+  async (friendId, thunkAPI) => {
+    try {
+      const response = await baseUrl.post(`/users/addFriend`, { friendId });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to add friend');
+    }
   }
 );
 
-export const addPhoto = createAsyncThunk(
+export const addPhoto:any = createAsyncThunk(
   'user/addPhoto',
-  async (photoUrl: string) => {
-    const response = await baseUrl.post(`/users/addPhoto`, { photoUrl });
-    return response.data;
+  async (photoUrl, thunkAPI) => {
+    try {
+      const response = await baseUrl.post(`/users/addPhoto`, { photoUrl });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to add photo');
+    }
   }
 );
 
-export const updateBio = createAsyncThunk(
+export const updateBio:any = createAsyncThunk(
   'user/updateBio',
-  async (bio: string) => {
-    const response = await baseUrl.post(`/users/updateBio`, { bio });
-    return response.data;
+  async (bio, thunkAPI) => {
+    try {
+      const response = await baseUrl.post(`/users/updateBio`, { bio });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to update bio');
+    }
   }
 );

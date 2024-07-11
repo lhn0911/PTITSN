@@ -11,7 +11,6 @@ import {
 } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Register.scss";
 import baseUrl from "../../api/index";
@@ -22,6 +21,10 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [bio, setBio] = useState(""); // New field for bio
+  const [avatar, setAvatar] = useState(""); // New field for avatar
+  const [banner, setBanner] = useState(""); // New field for banner
+  const [chat, setChat] = useState(""); // New field for chat
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState({
@@ -30,7 +33,11 @@ const Register: React.FC = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    bio: "",
+    avatar: "",
+    banner: "",
     general: "",
+    chat: "",
   });
   const [showModal, setShowModal] = useState(false);
 
@@ -102,11 +109,19 @@ const Register: React.FC = () => {
         }
 
         const newUser = {
-          name: `${firstName} ${lastName}`,
+          username: `${firstName} ${lastName}`,
           email: email,
           password: password,
-          status: true,
-          img: "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
+          avatar: "", // Default to empty string
+          banner: "", // Default to empty string
+          bio: "", // Default to empty string
+          follows: [], // Default to empty array
+          friends: [], // Default to empty array
+          groups: [], // Default to empty array
+          status: false,
+          role: "user", // Default role
+          chat: [],
+          created_at: new Date().toISOString(), // Current timestamp
         };
 
         const postResponse = await baseUrl.post("/User", newUser);
@@ -116,13 +131,13 @@ const Register: React.FC = () => {
         } else {
           setError((prevError) => ({
             ...prevError,
-            general: "Đăng kí thất bại.Vui lòng thử lại sau!",
+            general: "Đăng kí thất bại. Vui lòng thử lại sau!",
           }));
         }
       } catch (error) {
         setError((prevError) => ({
           ...prevError,
-          general: "An error occurred. Please try again.",
+          general: "Đã xảy ra lỗi. Vui lòng thử lại sau.",
         }));
       }
     }

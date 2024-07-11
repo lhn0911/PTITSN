@@ -17,7 +17,8 @@
       "friends": [
         {
           "userId": 1,
-          "created_at": "2024-07-09T11:00:00Z"
+          "created_at": "2024-07-09T11:00:00Z",
+          "chat": []
         }
       ],
       "groups": [
@@ -44,15 +45,80 @@
           ]
         }
       ],
-      "ceated_at": "2024-07-09T11:00:00Z"
+      "ceated_at": "2024-07-09T11:00:00Z",
+      "status": false,
+      "role": "user"
     },
     {
-      "name": "Hiếu Phạm",
-      "email": "hieupham@gmail.com",
-      "password": "hieupham",
-      "status": true,
-      "img": "https://firebasestorage.googleapis.com/v0/b/ptit-k5.appspot.com/o/kisspng-computer-icons-user-profile-user-account-clip-art-5b07b23ad4dd52.9335900715272310348719.jpg?alt=media&token=1f66fd21-3b78-45bb-bbeb-d10f047d4378",
-      "id": 2
+      "id": 100,
+      "username": "Admin",
+      "email": "admin@gmail.com",
+      "password": "admin",
+      "role": "admin"
+    },
+    {
+      "username": "Đình Dương",
+      "email": "dd@gmail.com",
+      "password": "123123",
+      "avatar": "",
+      "banner": "",
+      "bio": "",
+      "follows": [],
+      "friends": [],
+      "groups": [],
+      "status": false,
+      "role": "user",
+      "chat": [],
+      "created_at": "2024-07-11T08:46:10.731Z",
+      "id": 101
+    },
+    {
+      "username": "1 1",
+      "email": "1@gmail.com",
+      "password": "111111",
+      "avatar": "",
+      "banner": "",
+      "bio": "",
+      "follows": [],
+      "friends": [],
+      "groups": [],
+      "status": false,
+      "role": "user",
+      "chat": [],
+      "created_at": "2024-07-11T08:46:33.520Z",
+      "id": 102
+    },
+    {
+      "username": "2 2",
+      "email": "22@gmail.com",
+      "password": "1111111",
+      "avatar": "",
+      "banner": "",
+      "bio": "",
+      "follows": [],
+      "friends": [],
+      "groups": [],
+      "status": false,
+      "role": "user",
+      "chat": [],
+      "created_at": "2024-07-11T08:51:25.498Z",
+      "id": 103
+    },
+    {
+      "username": "3 3",
+      "email": "3@gmail.com",
+      "password": "090909",
+      "avatar": "",
+      "banner": "",
+      "bio": "",
+      "follows": [],
+      "friends": [],
+      "groups": [],
+      "status": false,
+      "role": "user",
+      "chat": [],
+      "created_at": "2024-07-11T08:53:09.277Z",
+      "id": 104
     }
   ],
   "stories": [

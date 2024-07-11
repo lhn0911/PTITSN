@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { FaLock, FaFacebook, FaTwitter, FaGoogle } from "react-icons/fa";
-import { FiEye } from "react-icons/fi";
-import { AiOutlineMail } from "react-icons/ai";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import baseURL from "../../api/index"; // Import your baseURL for API calls
+import { FaLock, FaFacebook, FaTwitter, FaGoogle } from "react-icons/fa";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { AiOutlineMail } from "react-icons/ai";
+import baseURL from "../../api/index";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/reducers/userReducer";
@@ -12,131 +12,135 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleLogin = async () => {
-    setIsSubmitted(true);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsSubmitting(true);
 
-    if (email === "" || password === "") {
+    if (!email || !password) {
       setError("Vui lòng điền đầy đủ thông tin");
+      setIsSubmitting(false);
       return;
     }
 
     try {
       const response = await baseURL.get(`/User`, {
-        params: {
-          email,
-          password,
-        },
+        params: { email, password },
       });
-      const data = response.data;
+      const users = response.data;
 
-      if (data.length > 0) {
-        const user = data[0];
-        if (user.status === false) {
+      if (users.length > 0) {
+        const user = users[0];
+        if (user.status === true) {
           setError("Tài khoản bị khóa");
+          setIsSubmitting(false);
+          return;
+        }
+
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("userName", user.username);
+
+        dispatch(login(user)); // Dispatch user object
+
+        console.log("User role:", user.role); // Để debug
+
+        if (user.role === "admin") {
+          console.log("Redirecting to admin page");
+          navigate("/admin");
         } else {
-          // Save user information to local storage
-          localStorage.setItem(
-            "userLogin",
-            JSON.stringify({ id: user.id, username: user.username })
-          );
-          if (user.email === "admin@gmail.com" && password === "admin") {
-            navigate("/admin"); // Redirect to admin page
-          } else {
-            dispatch(login(user.username)); // Dispatch login action to Redux store
-            navigate("/home"); // Redirect to user's home page
-          }
+          console.log("Redirecting to home page");
+          navigate("/home");
         }
       } else {
-        setError("Sai tài khoản hoặc mật khẩu");
+        setError("Email hoặc mật khẩu không đúng");
       }
     } catch (error) {
-      setError("Có lỗi xảy ra. Vui lòng thử lại.");
+      console.error("Login error:", error);
+      setError("Đã xảy ra lỗi. Vui lòng thử lại sau.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleSignup = () => {
-    navigate("/register");
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const isAuthenticated = localStorage.getItem("userLogin") !== null;
-      if (isAuthenticated) {
-        const userLogin = JSON.parse(localStorage.getItem("userLogin") || "");
-        dispatch(login(userLogin.username));
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, [dispatch]);
-
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-info-subtle">
-      <div>
-        <h1 className="text-black text-center mb-4">ĐĂNG NHẬP</h1>
-        <div
-          className="bg-white p-4 rounded shadow text-center w-100"
-          style={{ maxWidth: "400px" }}
-        >
+    <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-light">
+      <div
+        className="bg-white p-5 rounded shadow"
+        style={{ maxWidth: "400px" }}
+      >
+        <h2 className="text-center mb-4">Đăng nhập</h2>
+        <form onSubmit={handleLogin}>
           <div className="mb-3 position-relative">
-            <AiOutlineMail className="position-absolute top-50 start-0 translate-middle-y text-primary ms-2" />
+            <AiOutlineMail className="position-absolute top-50 start-0 translate-middle-y ms-3" />
             <input
               type="email"
+              className="form-control ps-5"
               placeholder="Email"
-              className={`form-control ps-5 ${
-                isSubmitted && email === "" ? "is-invalid" : ""
-              }`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="mb-3 position-relative">
-            <FaLock className="position-absolute top-50 start-0 translate-middle-y text-primary ms-2" />
+            <FaLock className="position-absolute top-50 start-0 translate-middle-y ms-3" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
+              className="form-control ps-5"
               placeholder="Mật khẩu"
-              className={`form-control ps-5 ${
-                isSubmitted && password === "" ? "is-invalid" : ""
-              }`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
-            <FiEye
-              className="position-absolute top-50 translate-middle-y text-primary me-2"
-              style={{ right: "10px", cursor: "pointer" }}
-              onClick={() => setPassword((prev) => (prev ? "" : password))}
-            />
+            <button
+              type="button"
+              className="btn position-absolute top-50 end-0 translate-middle-y me-2"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </button>
           </div>
           {error && <div className="alert alert-danger">{error}</div>}
-          <button className="btn btn-primary w-100 mb-2" onClick={handleLogin}>
-            ĐĂNG NHẬP
+          <button
+            type="submit"
+            className="btn btn-primary w-100"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>
-          <a href="#" className="d-block mb-3 text-primary">
+        </form>
+        <div className="mt-3 text-center">
+          <a href="#" className="text-decoration-none">
             Quên mật khẩu?
           </a>
-
-          <a href="#" onClick={handleSignup}>
-            Bạn chưa có tài khoản? Đăng kí
+        </div>
+        <div className="mt-3 text-center">
+          <span>Chưa có tài khoản? </span>
+          <a href="/register" className="text-decoration-none">
+            Đăng ký
           </a>
         </div>
-        <div className="d-flex gap-2 align-items-center mt-4">
-          <button className="btn btn-primary d-flex align-items-center">
-            <FaFacebook className="me-2" /> Facebook
-          </button>
-          <button className="btn btn-info d-flex align-items-center">
-            <FaTwitter className="me-2" /> Twitter
-          </button>
-          <button className="btn btn-danger d-flex align-items-center">
-            <FaGoogle className="me-2" /> Google
-          </button>
+        <div className="mt-4">
+          <p className="text-center mb-3">Hoặc đăng nhập với</p>
+          <div className="d-flex justify-content-center gap-2">
+            <button className="btn btn-outline-primary">
+              <FaFacebook />
+            </button>
+            <button className="btn btn-outline-info">
+              <FaTwitter />
+            </button>
+            <button className="btn btn-outline-danger">
+              <FaGoogle />
+            </button>
+          </div>
         </div>
       </div>
     </div>

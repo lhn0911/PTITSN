@@ -1,12 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-// import "./ProfilePage.css";
+import baseUrl from "../../api"; // Import baseUrl from your api module
 
 const ProfilePage = () => {
   const [showModal, setShowModal] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null); // Initialize loggedInUser as null
+  const [usersData, setUsersData] = useState([]); // State to store fetched user data
+
+  useEffect(() => {
+    // Fetch user data when the component mounts
+    const fetchUserData = async () => {
+      try {
+        const response = await baseUrl.get("/User");
+        setUsersData(response.data); // Store fetched user data in state
+        // Assuming response.data is an array of users, set the first user as loggedInUser
+        if (response.data.length > 0) {
+          setLoggedInUser(response.data[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData(); // Call the fetchUserData function
+  }, []); // Empty dependency array ensures this effect runs only once on mount
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
+
+  const handleFriendRequest = async (userId) => {
+    try {
+      // Example of updating friend request (not implemented in JSON directly)
+      // const updatedUser = await baseUrl.put(`/User/${userId}`, { friendRequestId: loggedInUser.id });
+      console.log("Friend request sent to user with id:", userId);
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+    }
+  };
+
+  if (!loggedInUser) {
+    return <div>Loading...</div>; // Show loading state while waiting for user data
+  }
 
   return (
     <div className="container mt-5">
@@ -14,12 +48,8 @@ const ProfilePage = () => {
         <div className="col-md-8">
           <div className="card">
             <div className="card-body text-center">
-              <img
-                src="https://via.placeholder.com/150"
-                className="w-50 mb-3"
-                alt="User"
-              />
-              <h4>Hoàng Nam</h4>
+              <img src={loggedInUser.avatar} className="w-50 mb-3" alt="User" />
+              <h4>{loggedInUser.username}</h4>
               <button className="btn btn-primary btn-sm mx-2">
                 Thêm vào tin
               </button>
@@ -36,22 +66,18 @@ const ProfilePage = () => {
             <div className="card-body">
               <h5 className="card-title">Những người bạn có thể biết</h5>
               <div className="d-flex flex-wrap">
-                {[
-                  "User 1",
-                  "User 2",
-                  "User 3",
-                  "User 4",
-                  "User 5",
-                  "User 6",
-                ].map((user, index) => (
-                  <div className="p-2 text-center" key={index}>
+                {usersData.map((user) => (
+                  <div className="p-2 text-center" key={user.id}>
                     <img
-                      src="https://via.placeholder.com/100"
+                      src={user.avatar}
                       className="rounded"
-                      alt={user}
+                      alt={user.username}
                     />
-                    <p>{user}</p>
-                    <button className="btn btn-primary btn-sm">
+                    <p>{user.username}</p>
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() => handleFriendRequest(user.id)}
+                    >
                       Thêm bạn bè
                     </button>
                   </div>
@@ -67,7 +93,7 @@ const ProfilePage = () => {
           <div className="card">
             <div className="card-body">
               <h5 className="card-title">Giới thiệu</h5>
-              <p className="card-text">Thông tin giới thiệu...</p>
+              <p className="card-text">{loggedInUser.bio}</p>
               <button className="btn btn-secondary btn-sm">
                 Chỉnh sửa chi tiết
               </button>
@@ -78,42 +104,32 @@ const ProfilePage = () => {
           </div>
           <div className="card mt-3">
             <div className="card-body">
-              <h5 className="card-title">Ảnh</h5>
-              <div className="d-flex flex-wrap photos-grid">
-                {Array(6)
-                  .fill()
-                  .map((_, index) => (
-                    <img
-                      src="https://via.placeholder.com/100"
-                      alt={`Photo ${index}`}
-                      key={index}
-                    />
-                  ))}
-              </div>
-              <a href="#" className="btn btn-link">
-                Xem tất cả ảnh
-              </a>
-            </div>
-          </div>
-          <div className="card mt-3">
-            <div className="card-body">
               <h5 className="card-title">Bạn bè</h5>
               <div className="d-flex flex-wrap">
-                {[
-                  "Friend 1",
-                  "Friend 2",
-                  "Friend 3",
-                  "Friend 4",
-                  "Friend 5",
-                  "Friend 6",
-                ].map((friend, index) => (
-                  <div className="p-2 text-center" key={index}>
+                {loggedInUser.friends.map((friend) => (
+                  <div className="p-2 text-center" key={friend.userId}>
                     <img
-                      src="https://via.placeholder.com/100"
+                      src={
+                        usersData.find((user) => user.id === friend.userId)
+                          ?.avatar
+                      }
                       className="rounded"
-                      alt={friend}
+                      alt={
+                        usersData.find((user) => user.id === friend.userId)
+                          ?.username
+                      }
                     />
-                    <p>{friend}</p>
+                    <p>
+                      {
+                        usersData.find((user) => user.id === friend.userId)
+                          ?.username
+                      }
+                    </p>
+                    {friend.status ? (
+                      <span className="text-success">Bạn bè</span>
+                    ) : (
+                      <span className="text-warning">Đang chờ xác nhận</span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -132,11 +148,19 @@ const ProfilePage = () => {
           <Form>
             <Form.Group controlId="formName">
               <Form.Label>Họ và tên</Form.Label>
-              <Form.Control type="text" placeholder="Nhập họ và tên" />
+              <Form.Control
+                type="text"
+                placeholder="Nhập họ và tên"
+                defaultValue={loggedInUser.username}
+              />
             </Form.Group>
             <Form.Group controlId="formEmail">
               <Form.Label>Email</Form.Label>
-              <Form.Control type="email" placeholder="Nhập email" />
+              <Form.Control
+                type="email"
+                placeholder="Nhập email"
+                defaultValue={loggedInUser.email}
+              />
             </Form.Group>
             <Form.Group controlId="formPassword">
               <Form.Label>Mật khẩu</Form.Label>
@@ -144,7 +168,11 @@ const ProfilePage = () => {
             </Form.Group>
             <Form.Group controlId="formImage">
               <Form.Label>Ảnh đại diện</Form.Label>
-              <Form.Control type="text" placeholder="URL ảnh đại diện" />
+              <Form.Control
+                type="text"
+                placeholder="URL ảnh đại diện"
+                defaultValue={loggedInUser.avatar}
+              />
             </Form.Group>
             <Button variant="primary" type="submit">
               Lưu thay đổi

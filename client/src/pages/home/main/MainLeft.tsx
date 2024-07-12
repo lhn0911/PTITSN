@@ -3,9 +3,8 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
-import axios from "axios";
-import "../Home.scss";
 import baseUrl from "../../../api";
+import "../Home.scss";
 
 const MainLeft: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
@@ -16,10 +15,32 @@ const MainLeft: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [user, setUser] = useState<any>(null);
   const [friends, setFriends] = useState<any[]>([]);
+  const [groupSearchTerm, setGroupSearchTerm] = useState("");
+  const [friendSearchTerm, setFriendSearchTerm] = useState("");
+  const [filteredGroups, setFilteredGroups] = useState<any[]>([]);
+  const [filteredFriends, setFilteredFriends] = useState<any[]>([]);
 
   useEffect(() => {
     fetchUserData();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      const searchGroups = user.groups.filter((group: any) =>
+        group.name.toLowerCase().includes(groupSearchTerm.toLowerCase())
+      );
+      setFilteredGroups(searchGroups);
+    }
+  }, [groupSearchTerm, user]);
+
+  useEffect(() => {
+    if (friends) {
+      const searchFriends = friends.filter((friend: any) =>
+        friend.username.toLowerCase().includes(friendSearchTerm.toLowerCase())
+      );
+      setFilteredFriends(searchFriends);
+    }
+  }, [friendSearchTerm, friends]);
 
   const fetchUserData = async () => {
     try {
@@ -107,7 +128,14 @@ const MainLeft: React.FC = () => {
           <h6>Nhóm của bạn</h6>
           <i className="fa-solid fa-magnifying-glass"></i>
         </div>
-        {user.groups.map((group: any) => (
+        <input
+          type="text"
+          value={groupSearchTerm}
+          onChange={(e) => setGroupSearchTerm(e.target.value)}
+          placeholder="Tìm kiếm nhóm..."
+          className="search-input"
+        />
+        {filteredGroups.map((group: any) => (
           <div key={group.id} className="group-chat">
             <img
               src={group.group_picture}
@@ -143,7 +171,14 @@ const MainLeft: React.FC = () => {
           <h6>Người liên hệ</h6>
           <i className="fa-solid fa-magnifying-glass"></i>
         </div>
-        {friends.map((friend: any) => (
+        <input
+          type="text"
+          value={friendSearchTerm}
+          onChange={(e) => setFriendSearchTerm(e.target.value)}
+          placeholder="Tìm kiếm người liên hệ..."
+          className="search-input"
+        />
+        {filteredFriends.map((friend: any) => (
           <div
             key={friend.id}
             className="contact"

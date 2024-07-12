@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { searchUsers, updateUserStatus } from "../../services/admin/User";
 import { searchGroups, updateGroupStatus } from "../../services/admin/Group";
-import { User, Group } from "../../interface/index";
+import { searchPosts, updatePostStatus } from "../../services/admin/Post"; // Thêm import cho bài viết
+import { User, Group, Post } from "../../interface/index";
 import "./Admin.scss";
 
 const Admin: React.FC = () => {
@@ -16,7 +17,7 @@ const Admin: React.FC = () => {
   const userError = useSelector((state: RootState) => state.user.error);
   const userTotalCount = useSelector(
     (state: RootState) => state.user.totalCount
-  ); // Total user count from state
+  );
 
   // Group state
   const groups = useSelector((state: RootState) => state.groups.groups);
@@ -24,18 +25,29 @@ const Admin: React.FC = () => {
   const groupError = useSelector((state: RootState) => state.groups.error);
   const groupTotalCount = useSelector(
     (state: RootState) => state.groups.totalCount
-  ); // Total group count from state
+  );
+
+  // Post state
+  const posts = useSelector((state: RootState) => state.posts.searchResults);
+  const postStatus = useSelector((state: RootState) => state.posts.status);
+  const postError = useSelector((state: RootState) => state.posts.error);
+  const postTotalCount = useSelector(
+    (state: RootState) => state.posts.totalCount
+  );
 
   const [userSearchTerm, setUserSearchTerm] = useState("");
   const [groupSearchTerm, setGroupSearchTerm] = useState("");
+  const [postSearchTerm, setPostSearchTerm] = useState(""); // Thêm state tìm kiếm bài viết
 
   // Pagination states
   const [userPage, setUserPage] = useState(1);
   const [groupPage, setGroupPage] = useState(1);
+  const [postPage, setPostPage] = useState(1); // Thêm state phân trang bài viết
   const usersPerPage = 10;
   const groupsPerPage = 10;
+  const postsPerPage = 10; // Số bài viết trên mỗi trang
 
-  // Fetch users and groups on component mount
+  // Fetch users, groups, and posts on component mount
   useEffect(() => {
     dispatch(
       searchUsers({ searchTerm: "", page: userPage, limit: usersPerPage })
@@ -43,7 +55,10 @@ const Admin: React.FC = () => {
     dispatch(
       searchGroups({ searchTerm: "", page: groupPage, limit: groupsPerPage })
     );
-  }, [dispatch, userPage, groupPage]);
+    dispatch(
+      searchPosts({ searchTerm: "", page: postPage, limit: postsPerPage })
+    );
+  }, [dispatch, userPage, groupPage, postPage]);
 
   const handleUserSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserSearchTerm(e.target.value);
@@ -63,12 +78,29 @@ const Admin: React.FC = () => {
     );
   };
 
+  const handlePostSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Thêm hàm tìm kiếm bài viết
+    setPostSearchTerm(e.target.value);
+    dispatch(
+      searchPosts({
+        searchTerm: e.target.value,
+        page: 1,
+        limit: postsPerPage,
+      })
+    );
+  };
+
   const handleToggleUserStatus = (userId: number, currentStatus: boolean) => {
     dispatch(updateUserStatus({ userId, status: !currentStatus }));
   };
 
   const handleToggleGroupStatus = (groupId: number, currentStatus: boolean) => {
     dispatch(updateGroupStatus({ groupId, status: !currentStatus }));
+  };
+
+  const handleTogglePostStatus = (postId: number, currentStatus: boolean) => {
+    // Thêm hàm cập nhật trạng thái bài viết
+    dispatch(updatePostStatus({ postId, status: !currentStatus }));
   };
 
   // Pagination handlers
@@ -83,6 +115,14 @@ const Admin: React.FC = () => {
     setGroupPage(page);
     dispatch(
       searchGroups({ searchTerm: groupSearchTerm, page, limit: groupsPerPage })
+    );
+  };
+
+  const handlePostPageChange = (page: number) => {
+    // Thêm hàm phân trang bài viết
+    setPostPage(page);
+    dispatch(
+      searchPosts({ searchTerm: postSearchTerm, page, limit: postsPerPage })
     );
   };
 
@@ -120,6 +160,24 @@ const Admin: React.FC = () => {
     return items;
   };
 
+  const postPagination = () => {
+    // Thêm hàm phân trang bài viết
+    const pages = Math.ceil(postTotalCount / postsPerPage);
+    let items = [];
+    for (let number = 1; number <= pages; number++) {
+      items.push(
+        <Pagination.Item
+          key={number}
+          active={number === postPage}
+          onClick={() => handlePostPageChange(number)}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    }
+    return items;
+  };
+
   return (
     <div className="admin-panel">
       <header className="admin-header">Admin Panel</header>
@@ -128,6 +186,7 @@ const Admin: React.FC = () => {
           <ul>
             <li>Quản lý User</li>
             <li>Quản lý Group</li>
+            <li>Quản lý Bài viết</li> {/* Thêm mục quản lý bài viết */}
           </ul>
         </aside>
         <main className="admin-content">
@@ -253,6 +312,67 @@ const Admin: React.FC = () => {
               </tbody>
             </Table>
             <Pagination>{groupPagination()}</Pagination>
+
+            {/* Post Management */}
+            <h2>Quản lý Bài viết</h2>
+            <input
+              type="text"
+              value={postSearchTerm}
+              onChange={handlePostSearch}
+              placeholder="Tìm kiếm bài viết..."
+            />
+            <Button
+              onClick={() =>
+                dispatch(
+                  searchPosts({
+                    searchTerm: postSearchTerm,
+                    page: 1,
+                    limit: postsPerPage,
+                  })
+                )
+              }
+            >
+              Tìm kiếm
+            </Button>
+            {postStatus === "loading" && <p>Loading...</p>}
+            {postError && <p>{postError}</p>}
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Content</th>
+                  <th>Trạng thái</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {posts.length > 0 ? (
+                  posts.map((post: Post) => (
+                    <tr key={post.id}>
+                      <td>{post.id}</td>
+                      <td>{post.title}</td>
+                      <td>{post.content}</td>
+                      <td>{post.status ? "Locked" : "Active"}</td>
+                      <td>
+                        <Button
+                          onClick={() =>
+                            handleTogglePostStatus(post.id, post.status)
+                          }
+                        >
+                          {post.status ? "Unlock" : "Lock"}
+                        </Button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5}>No posts found</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+            <Pagination>{postPagination()}</Pagination>
           </div>
         </main>
       </div>

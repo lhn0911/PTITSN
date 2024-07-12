@@ -70,7 +70,7 @@ const ProfilePage = () => {
                   <div className="p-2 text-center" key={user.id}>
                     <img
                       src={user.avatar}
-                      className="rounded"
+                      className="rounded w-25"
                       alt={user.username}
                     />
                     <p>{user.username}</p>
@@ -113,7 +113,7 @@ const ProfilePage = () => {
                         usersData.find((user) => user.id === friend.userId)
                           ?.avatar
                       }
-                      className="rounded"
+                      className="rounded w-25"
                       alt={
                         usersData.find((user) => user.id === friend.userId)
                           ?.username

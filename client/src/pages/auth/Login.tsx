@@ -45,9 +45,18 @@ const Login: React.FC = () => {
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("userName", user.username);
 
+        // Update localStorage with user information
+        localStorage.setItem(
+          "userLogin",
+          JSON.stringify({
+            id: user.id,
+            username: user.username,
+          })
+        );
+
         dispatch(login(user)); // Dispatch user object
 
-        console.log("User role:", user.role); // Để debug
+        console.log("User role:", user.role); // For debugging purposes
 
         if (user.role === "admin") {
           console.log("Redirecting to admin page");

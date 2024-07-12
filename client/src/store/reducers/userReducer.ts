@@ -1,9 +1,14 @@
 // src/store/reducers/userReducer.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../interface/index';
-import { fetchUser, addFriend, addPhoto, updateBio } from '../../services/user/userServices';
-
-// Định nghĩa giao diện của trạng thái người dùng trong Redux store
+import {
+  searchUsers,
+  updateUserStatus
+} from '../../services/admin/User';
+import {  fetchUser,
+  addFriend,
+  addPhoto,
+  updateBio} from "../../services/user/userServices"
 export interface UserState {
   currentUser: User | null;
   friends: User[];
@@ -11,9 +16,9 @@ export interface UserState {
   bio: string;
   error: string | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  searchResults: User[];
 }
 
-// Trạng thái khởi tạo của người dùng
 const initialState: UserState = {
   currentUser: null,
   friends: [],
@@ -21,9 +26,9 @@ const initialState: UserState = {
   bio: '',
   error: null,
   status: 'idle',
+  searchResults: [],
 };
 
-// Tạo Redux slice cho người dùng
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -31,18 +36,16 @@ const userSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
-    // Đăng nhập và lưu thông tin người dùng vào Redux store
     login(state, action: PayloadAction<User>) {
       state.currentUser = action.payload;
     },
-    // Đăng xuất và xóa thông tin người dùng và các dữ liệu liên quan
     logout(state) {
       state.currentUser = null;
       state.friends = [];
       state.photos = [];
       state.bio = '';
+      state.searchResults = [];
     },
-    // Cập nhật thông tin của người dùng
     updateUser(state, action: PayloadAction<Partial<User>>) {
       if (state.currentUser) {
         state.currentUser = { ...state.currentUser, ...action.payload };
@@ -51,71 +54,103 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Xử lý trạng thái khi đang tải thông tin người dùng
+      // Fetch User
       .addCase(fetchUser.pending, (state) => {
         state.status = 'loading';
       })
-      // Xử lý trạng thái khi lấy thông tin người dùng thành công
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.currentUser = action.payload.user;
         state.error = null;
       })
-      // Xử lý trạng thái khi lấy thông tin người dùng thất bại
       .addCase(fetchUser.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       })
-      // Xử lý trạng thái khi đang thêm bạn
+
+      // Add Friend
       .addCase(addFriend.pending, (state) => {
         state.status = 'loading';
       })
-      // Xử lý trạng thái khi thêm bạn thành công
       .addCase(addFriend.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.friends.push(action.payload.friend);
         state.error = null;
       })
-      // Xử lý trạng thái khi thêm bạn thất bại
       .addCase(addFriend.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       })
-      // Xử lý trạng thái khi đang thêm ảnh
+
+      // Add Photo
       .addCase(addPhoto.pending, (state) => {
         state.status = 'loading';
       })
-      // Xử lý trạng thái khi thêm ảnh thành công
       .addCase(addPhoto.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.photos.push(action.payload.photoUrl);
         state.error = null;
       })
-      // Xử lý trạng thái khi thêm ảnh thất bại
       .addCase(addPhoto.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       })
-      // Xử lý trạng thái khi đang cập nhật bio
+
+      // Update Bio
       .addCase(updateBio.pending, (state) => {
         state.status = 'loading';
       })
-      // Xử lý trạng thái khi cập nhật bio thành công
       .addCase(updateBio.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.bio = action.payload.bio;
         state.error = null;
       })
-      // Xử lý trạng thái khi cập nhật bio thất bại
       .addCase(updateBio.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      })
+
+      // Search Users
+      .addCase(searchUsers.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(searchUsers.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.searchResults = action.payload;
+        state.error = null;
+      })
+      .addCase(searchUsers.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      })
+
+      // Update User Status (Lock/Unlock)
+      .addCase(updateUserStatus.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateUserStatus.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // Cập nhật trạng thái user trong searchResults
+        state.searchResults = state.searchResults.map(user => 
+          user.id === action.payload.id ? action.payload : user
+        );
+        // Cập nhật trạng thái user trong friends nếu cần
+        state.friends = state.friends.map(user => 
+          user.id === action.payload.id ? action.payload : user
+        );
+        // Cập nhật currentUser nếu đó là user đang đăng nhập
+        if (state.currentUser && state.currentUser.id === action.payload.id) {
+          state.currentUser = action.payload;
+        }
+        state.error = null;
+      })
+      .addCase(updateUserStatus.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       });
   },
 });
 
-// Export các action creators để sử dụng trong các component
 export const { clearError, login, logout, updateUser } = userSlice.actions;
 
-// Export reducer để tích hợp vào Redux store
 export default userSlice.reducer;

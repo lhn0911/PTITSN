@@ -10,3 +10,4 @@ export const store = configureStore({
     group: groupReducer,
   },
 });
+export type RootState = ReturnType<typeof store.getState>;

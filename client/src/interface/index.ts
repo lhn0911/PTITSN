@@ -2,9 +2,7 @@ export interface Post {
   id: number;
   title: string;
   content: string;
-  status: boolean; // Ví dụ: true = Locked, false = Active
-  created_at: string;
-  updated_at: string;
+  status: boolean;
 }
 
 export interface User {
@@ -33,7 +31,7 @@ export interface Friend {
   avatar: string;
 }
 
-export interface PostsState {
+export interface PostState {
   posts: Post[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
@@ -49,5 +47,5 @@ export interface RootState {
   };
   groups: Group[];
   friends: Friend[];
-  posts: PostsState; // Cập nhật RootState để bao gồm state của posts
+  posts: PostState; // Sửa lại tên để phù hợp với PostState
 }

@@ -1,53 +1,55 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import baseUrl from '../../api/index';
 import { Post } from '../../interface/index';
 
-// Định nghĩa kiểu cho state của slice
-interface PostsState {
-  posts: Post[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-}
-
-// Định nghĩa state ban đầu
-const initialState: PostsState = {
-  posts: [],
-  status: 'idle',
-  error: null,
-};
-
 // Thunk để lấy danh sách bài viết
-export const fetchPosts:any = createAsyncThunk(
+export const fetchPosts = createAsyncThunk<Post[], void, { rejectValue: string }>(
   'posts/fetchPosts',
-  async () => {
-    const response = await baseUrl.get('/posts');
-    return response.data;
+  async (_, thunkAPI) => {
+    try {
+      const response = await baseUrl.get('/posts');
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to fetch posts');
+    }
   }
 );
 
 // Thunk để đăng bài viết
-export const createPost:any = createAsyncThunk(
+export const createPost = createAsyncThunk<Post, Omit<Post, 'id'>, { rejectValue: string }>(
   'posts/createPost',
-  async (newPost: Omit<Post, 'id'>) => {
-    const response = await baseUrl.post('/posts', newPost);
-    return response.data;
+  async (newPost, thunkAPI) => {
+    try {
+      const response = await baseUrl.post('/posts', newPost);
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to create post');
+    }
   }
 );
 
 // Thunk để cập nhật trạng thái bài viết (ẩn hoặc hiện)
-export const updatePostStatus:any = createAsyncThunk(
+export const updatePostStatus = createAsyncThunk<Post, { postId: number; status: boolean }, { rejectValue: string }>(
   'posts/updatePostStatus',
-  async ({ postId, status }: { postId: number; status: boolean }) => {
-    const response = await baseUrl.patch(`/posts/${postId}`, { status });
-    return response.data;
+  async ({ postId, status }, thunkAPI) => {
+    try {
+      const response = await baseUrl.patch(`/posts/${postId}`, { status });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to update post status');
+    }
   }
 );
 
 // Thunk để xóa bài viết
-export const deletePost:any = createAsyncThunk(
+export const deletePost = createAsyncThunk<number, number, { rejectValue: string }>(
   'posts/deletePost',
-  async (postId: number) => {
-    await baseUrl.delete(`/posts/${postId}`);
-    return postId;
+  async (postId, thunkAPI) => {
+    try {
+      await baseUrl.delete(`/posts/${postId}`);
+      return postId;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || 'Failed to delete post');
+    }
   }
 );

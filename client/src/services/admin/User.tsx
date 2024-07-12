@@ -5,7 +5,7 @@ import { User } from "../../interface/index";
 export const searchUsers: any = createAsyncThunk(
   "users/searchUsers",
   async (searchTerm: string) => {
-    const response = await baseUrl.get(`/User?search=${searchTerm}`);
+    const response = await baseUrl.get(`/User?_&username_like=${searchTerm}`);
     return response.data;
   }
 );

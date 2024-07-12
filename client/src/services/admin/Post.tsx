@@ -1,18 +1,21 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import baseUrl from "../../api";
+import { Post } from "../../interface/index";
 
-export const searcPost: any = createAsyncThunk(
-  "users/searchPosts",
+// Tìm kiếm bài viết
+export const searchPosts: any = createAsyncThunk<Post[], string>(
+  "posts/searchPosts",
   async (searchTerm: string) => {
-    const response = await baseUrl.get(`/Post?_&username_like=${searchTerm}`);
+    const response = await baseUrl.get(`/Post?_content_like=${searchTerm}`);
     return response.data;
   }
 );
 
-export const updatePostStatus: any = createAsyncThunk(
-  "users/updatePostStatus",
-  async ({ postId, status }: { postId: number; status: string }) => {
-    const response = await baseUrl.patch(`/User/${postId}`, { status });
-    return response.data;
-  }
-);
+// Cập nhật trạng thái bài viết
+export const updatePostStatus: any = createAsyncThunk<
+  Post,
+  { postId: number; status: string }
+>("posts/updatePostStatus", async ({ postId, status }) => {
+  const response = await baseUrl.patch(`/Post/${postId}`, { status });
+  return response.data;
+});
